@@ -4,7 +4,6 @@ use code_timing_macros::time_snippet;
 use const_format::concatcp;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
-use text_io::scan;
 
 const DAY: &str = "01";
 const INPUT_FILE: &str = concatcp!("input/", DAY, ".txt");
@@ -28,15 +27,13 @@ fn main() -> Result<()> {
         // Create two lists
         let mut l1 = vec![0];
         let mut l2 = vec![0];
-        let mut a: i32;
-        let mut b: i32;
 
         // Read input
         for line in reader.lines() {
-            let line = line.unwrap();
-            scan!(line.bytes() => "{} {}", a, b);
-            l1.push(a);
-            l2.push(b);
+            let el = line.unwrap();
+            let mut el = el.split_whitespace();
+            l1.push(el.next().unwrap().parse::<i32>().unwrap());
+            l2.push(el.next().unwrap().parse::<i32>().unwrap());
         }
 
         // Sort both lists
