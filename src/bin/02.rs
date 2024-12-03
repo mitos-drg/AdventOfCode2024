@@ -62,7 +62,7 @@ fn main() -> Result<()> {
         Ok(answer)
     }
 
-    // TODO: Set the expected answer for the test input
+    // Expected answer for the test input
     assert_eq!(2, part1(BufReader::new(TEST.as_bytes()))?);
 
     let input_file = BufReader::new(File::open(INPUT_FILE)?);
