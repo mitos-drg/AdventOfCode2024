@@ -2,6 +2,7 @@ use adv_code_2024::*;
 use anyhow::*;
 use code_timing_macros::time_snippet;
 use const_format::concatcp;
+use std::collections::HashMap;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 
@@ -58,17 +59,38 @@ fn main() -> Result<()> {
     //endregion
 
     //region Part 2
-    // println!("\n=== Part 2 ===");
-    //
-    // fn part2<R: BufRead>(reader: R) -> Result<usize> {
-    //     Ok(0)
-    // }
-    //
-    // assert_eq!(0, part2(BufReader::new(TEST.as_bytes()))?);
-    //
-    // let input_file = BufReader::new(File::open(INPUT_FILE)?);
-    // let result = time_snippet!(part2(input_file)?);
-    // println!("Result = {}", result);
+    println!("\n=== Part 2 ===");
+
+    fn part2<R: BufRead>(reader: R) -> Result<usize> {
+        let mut list = vec![0];
+        let mut mult: HashMap<usize, usize> = HashMap::new();
+
+        // Read input
+        for line in reader.lines() {
+            let line = line.unwrap();
+            let mut line = line.split_whitespace();
+            list.push(line.next().unwrap().parse::<usize>().unwrap());
+            let count = mult
+                .entry(line.next().unwrap().parse::<usize>().unwrap())
+                .or_insert(0);
+            *count += 1;
+        }
+
+        // Sum simillarity scores
+        let answer = list
+            .iter()
+            .map(|x| x * mult.get(x).copied().unwrap_or(0))
+            .sum();
+
+        // Return answer
+        Ok(answer)
+    }
+
+    assert_eq!(31, part2(BufReader::new(TEST.as_bytes()))?);
+
+    let input_file = BufReader::new(File::open(INPUT_FILE)?);
+    let result = time_snippet!(part2(input_file)?);
+    println!("Result = {}", result);
     //endregion
 
     Ok(())
