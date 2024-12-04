@@ -91,17 +91,39 @@ fn main() -> Result<()> {
     //endregion
 
     //region Part 2
-    // println!("\n=== Part 2 ===");
-    //
-    // fn part2<R: BufRead>(reader: R) -> Result<usize> {
-    //     Ok(0)
-    // }
-    //
-    // assert_eq!(9, part2(BufReader::new(TEST.as_bytes()))?);
-    //
-    // let input_file = BufReader::new(File::open(INPUT_FILE)?);
-    // let result = time_snippet!(part2(input_file)?);
-    // println!("Result = {}", result);
+    println!("\n=== Part 2 ===");
+
+    fn part2<R: BufRead>(reader: R) -> Result<usize> {
+        // Collect puzzle input
+        let input: Vec<Vec<u8>> = reader
+            .lines()
+            .map(|line| line.unwrap().bytes().collect())
+            .collect();
+
+        // Search for patterns in input
+        let mut answer = 0;
+        for (i, line) in input.iter().enumerate() {
+            for (j, letter) in line.iter().enumerate() {
+                if (*letter == b'A')
+                    && (1 <= i && i < input.len() - 1 && 1 <= j && j < input[i].len() - 1)
+                    && ((input[i + 1][j + 1] == b'M' && input[i - 1][j - 1] == b'S')
+                        || (input[i + 1][j + 1] == b'S' && input[i - 1][j - 1] == b'M'))
+                    && ((input[i - 1][j + 1] == b'M' && input[i + 1][j - 1] == b'S')
+                        || (input[i - 1][j + 1] == b'S' && input[i + 1][j - 1] == b'M'))
+                {
+                    answer += 1;
+                }
+            }
+        }
+
+        Ok(answer)
+    }
+
+    assert_eq!(9, part2(BufReader::new(TEST.as_bytes()))?);
+
+    let input_file = BufReader::new(File::open(INPUT_FILE)?);
+    let result = time_snippet!(part2(input_file)?);
+    println!("Result = {}", result);
     //endregion
 
     Ok(())
